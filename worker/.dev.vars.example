@@ -1,0 +1,2 @@
+# Copy to .dev.vars for `npx wrangler dev`. Make the value with (from this folder): node ../scripts/make-token.mjs
+API_TOKEN_HASH=paste-the-64-character-hash-here

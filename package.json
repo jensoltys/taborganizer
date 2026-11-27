@@ -1,0 +1,11 @@
+{
+  "name": "taborganizer",
+  "private": true,
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "setup": "npm --prefix worker ci && npm --prefix extension ci",
+    "test": "npm --prefix worker test && npm --prefix extension test && node scripts/test-security.mjs",
+    "token": "node scripts/make-token.mjs"
+  }
+}

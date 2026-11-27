@@ -1,0 +1,104 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT | Copyright (C) 2026 the Tab Organizer authors. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tab Organizer: Options</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0;
+    padding: 32px;
+    background: #14161c;
+    color: #e6e8ee;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #1a1d24;
+    border: 1px solid #2a2e38;
+    border-radius: 12px;
+    padding: 28px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+  p.sub {
+    margin: 0 0 24px;
+    color: #9aa0ac;
+    font-size: 13px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    color: #9aa0ac;
+    margin: 16px 0 6px;
+  }
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #0f1116;
+    border: 1px solid #2a2e38;
+    border-radius: 8px;
+    color: #e6e8ee;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  input:focus {
+    outline: none;
+    border-color: #4f8cff;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  button {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #2a2e38;
+    background: #23262f;
+    color: #e6e8ee;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button#save {
+    background: #4f8cff;
+    border-color: #4f8cff;
+    color: #0f1116;
+    font-weight: 600;
+  }
+  button:hover { filter: brightness(1.1); }
+  #status {
+    margin-top: 16px;
+    font-size: 13px;
+    color: #9aa0ac;
+    min-height: 16px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Tab Organizer</h1>
+    <p class="sub">Connect this extension to your own Worker. Leave it blank to keep everything in this browser only.</p>
+
+    <label for="apiUrl">API URL</label>
+    <input id="apiUrl" type="url" placeholder="https://tab-organizer.your-subdomain.workers.dev" spellcheck="false" />
+
+    <label for="token">Access token</label>
+    <input id="token" type="password" spellcheck="false" />
+
+    <div class="actions">
+      <button id="save">Save</button>
+      <button id="test">Test connection</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

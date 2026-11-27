@@ -1,0 +1,19 @@
+{
+  "name": "tab-organizer-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "wrangler": "4.110.0",
+    "vitest": "3.2.7",
+    "@cloudflare/vitest-pool-workers": "0.8.71"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  }
+}

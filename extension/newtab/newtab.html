@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT | Copyright (C) 2026 the Tab Organizer authors. See LICENSE. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body>
+  <header>
+    <input id="search" type="search" placeholder="Type to launch" autocomplete="off" autofocus
+           role="combobox" aria-expanded="false" aria-controls="search-results">
+    <ul id="search-results" role="listbox" hidden></ul>
+    <button id="setup-sync" class="muted-btn" hidden>Set up sync</button>
+    <button id="show-archived" class="muted-btn">Archived</button>
+  </header>
+  <section id="frequent" aria-label="Frequently used"></section>
+  <main>
+    <aside id="open-tabs" aria-label="Open tabs">
+      <h2>Open tabs</h2>
+      <ul id="open-tabs-list"></ul>
+    </aside>
+    <section id="collections" aria-label="Collections"></section>
+  </main>
+  <template id="collection-tpl">
+    <article class="collection" draggable="true">
+      <header class="collection-head">
+        <h2 class="collection-name" contenteditable="false"></h2>
+        <div class="collection-actions">
+          <button class="open-all muted-btn">Open all</button>
+          <button class="menu-btn muted-btn" aria-haspopup="true">&#8942;</button>
+        </div>
+      </header>
+      <ul class="link-list"></ul>
+      <form class="add-link"><input type="url" placeholder="Paste a link" required><button class="muted-btn">Add</button></form>
+    </article>
+  </template>
+  <script type="module" src="newtab.js"></script>
+</body>
+</html>

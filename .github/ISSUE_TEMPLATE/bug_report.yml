@@ -1,0 +1,29 @@
+name: Bug report
+description: Something in Tab Organizer doesn't work the way it should
+labels: [bug]
+body:
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part?
+      options:
+        - The extension (new tab page or Options)
+        - The Worker (sync)
+        - Setup steps
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to make it happen
+      placeholder: "1. Open a new tab\n2. Drag ...\n3. See ..."
+  - type: input
+    id: browser
+    attributes:
+      label: Chrome version and operating system

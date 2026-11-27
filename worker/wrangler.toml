@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+# Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+name = "tab-organizer"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tab-organizer-db"
+# Paste the id that `npx wrangler d1 create tab-organizer-db` prints.
+database_id = "YOUR_D1_DATABASE_ID"
