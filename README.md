@@ -2,7 +2,7 @@
 
 **A Chrome new tab page that saves your tabs into collections and finds any of them as you type.** Drag an open tab onto a collection and it's saved and closed. Your links sync between your computers through a Cloudflare Worker you run yourself, so there's no account and no subscription.
 
-I built it to stop paying for Toby. It's one person's tool, made to be easy to read and easy to make your own.
+I built it so I'd stop paying for a tab organizer subscription. It's one person's tool, made to be easy to read and easy to make your own.
 
 ![Tab Organizer's dark new tab page: a search box on top, a row of 8 most-used links, an Open tabs panel on the left with three tabs, and four collections named Morning routine, Side project, Trip planning and Read later](docs/screenshots/new-tab.png)
 
@@ -169,4 +169,4 @@ Bug reports and ideas are welcome in [Issues](../../issues). I'm not taking pull
 
 [MIT](LICENSE). Use it, change it, share it. If you publish a changed copy, give it your own name so nobody mistakes it for the original.
 
-Chrome is a trademark of Google LLC. Cloudflare is a trademark of Cloudflare, Inc. Toby is a trademark of its owner. Tab Organizer isn't affiliated with or endorsed by any of them.
+Chrome is a trademark of Google LLC. Cloudflare is a trademark of Cloudflare, Inc. Tab Organizer isn't affiliated with or endorsed by either of them.
