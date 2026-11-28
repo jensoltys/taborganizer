@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 export function scoreLink(query, link) {
   const q = query.toLowerCase();
   if (!q) return 0;

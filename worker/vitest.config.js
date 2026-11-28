@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
-import { defineWorkersConfig, readD1Migrations } from "@cloudflare/vitest-pool-workers/config";
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
+import { defineConfig } from "vitest/config";
+import { cloudflareTest, readD1Migrations } from "@cloudflare/vitest-plugin";
 
-export default defineWorkersConfig(async () => {
-  const migrations = await readD1Migrations("./migrations");
-  return {
-    test: {
-      setupFiles: ["./test/apply-migrations.js"],
-      poolOptions: {
-        workers: {
-          wrangler: { configPath: "./wrangler.toml" },
-          miniflare: { bindings: { TEST_MIGRATIONS: migrations } },
-        },
-      },
-    },
-  };
+export default defineConfig({
+  plugins: [
+    cloudflareTest(async () => ({
+      wrangler: { configPath: "./wrangler.toml" },
+      miniflare: { bindings: { TEST_MIGRATIONS: await readD1Migrations("./migrations") } },
+    })),
+  ],
+  test: {
+    setupFiles: ["./test/apply-migrations.js"],
+  },
 });

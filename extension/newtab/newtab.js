@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 import { getState, getConfig } from "../lib/store.js";
 import { enqueue, syncCycle } from "../lib/sync.js";
 import { uuid, nowIso, faviconUrl } from "../lib/util.js";

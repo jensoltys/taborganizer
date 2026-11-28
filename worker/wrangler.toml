@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-# Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+# Copyright (C) 2026 Jen Soltys. See LICENSE.
 name = "tab-organizer"
 main = "src/index.js"
 compatibility_date = "2026-07-01"

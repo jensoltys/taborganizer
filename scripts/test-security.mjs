@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 // Security regression gate for tab-organizer (Worker + D1 backend, MV3 extension).
 //
 // The point of this gate: every time a security audit surfaces a new finding,

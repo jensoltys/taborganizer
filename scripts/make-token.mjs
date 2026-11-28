@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 // Makes a new access token for your Tab Organizer Worker.
 // Prints the token (paste it into the extension's Options page) and its SHA-256 hash
 // (store it on the Worker with: npx wrangler secret put API_TOKEN_HASH).

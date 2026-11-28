@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 import { getConfig, setConfig } from "../lib/store.js";
 
 const $ = (id) => document.getElementById(id);

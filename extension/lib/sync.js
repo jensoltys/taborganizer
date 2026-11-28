@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 import { getConfig, getState, setState, getQueue, setQueue } from "./store.js";
 
 // ---------- pure ----------
@@ -33,9 +33,9 @@ export function applyOpLocal(state, op) {
 //     it belongs to (the database refuses a link whose collection doesn't exist yet)
 //   - a link's upsert keeps the position of its FIRST upsert, so a click queued after
 //     the link was created still finds the link
-// Known limit: clicks aren't numbered, so if the Worker stores a batch but its answer
-// never arrives, the retry counts that batch's clicks twice. Everything else is safe
-// to send twice.
+// Every other op is safe to send twice. A click isn't, so doFlush sends each one with
+// its _seq as op_id and the Worker counts an op_id only once (a batch can be stored
+// while its answer is lost, then sent again).
 // The merged op carries the newest op's _seq. flush() clears by _seq, so an edit made
 // while a send is in flight has a _seq that wasn't sent and stays queued.
 export function compactQueue(ops) {
@@ -147,7 +147,7 @@ async function doFlush() {
     const sentSeqs = new Set(ops.map((o) => o._seq));
     await api("/api/sync", {
       method: "POST",
-      body: JSON.stringify({ ops: ops.map(({ _seq, ...rest }) => rest) }),
+      body: JSON.stringify({ ops: ops.map(({ _seq, ...rest }) => (rest.type === "click" && _seq ? { ...rest, op_id: _seq } : rest)) }),
     });
     // Clear exactly what we sent (by stable _seq id, not object identity);
     // anything enqueued during the request survives.

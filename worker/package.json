@@ -8,9 +8,10 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "wrangler": "4.110.0",
-    "vitest": "3.2.7",
-    "@cloudflare/vitest-pool-workers": "0.8.71"
+    "wrangler": "4.162.0",
+    "vitest": "4.1.12",
+    "@cloudflare/vitest-plugin": "1.8.2",
+    "vite": "8.3.8"
   },
   "license": "MIT",
   "engines": {

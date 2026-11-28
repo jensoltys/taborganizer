@@ -64,6 +64,8 @@ node ../scripts/make-token.mjs
 npx wrangler secret put API_TOKEN_HASH
 ```
 
+Pulling a newer version later? Run the `migrations apply` line again before `wrangler deploy`, so the database has any new table the Worker expects.
+
 `make-token.mjs` prints a token and its hash. Paste the **hash** when `wrangler secret put` asks for it. Save the **token** in your password manager. The Worker only keeps the hash, so a lost token means making a new one.
 
 Check the Worker is up (use the address `wrangler deploy` printed):
@@ -130,7 +132,7 @@ Chrome extension                          Your Cloudflare account
 | `extension/newtab/` | The new tab page: drawing, drag and drop, search keys. |
 | `extension/options/` | The page where you paste your Worker address and token. |
 | `worker/src/` | The Worker: token check, routes, and every rule for how changes are applied. |
-| `worker/migrations/` | The two tables, `collections` and `links`. |
+| `worker/migrations/` | The tables: `collections`, `links`, and `click_ops` (click ids already counted, so a resent batch can't count a click twice). |
 | `scripts/` | `make-token.mjs` and the security check. |
 
 ---

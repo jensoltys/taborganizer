@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 export async function getState(db) {
   const collections = (await db.prepare("SELECT * FROM collections ORDER BY sort_order").all()).results;
   // Links whose collection no longer exists are never handed back (a link saved on one
@@ -26,8 +26,16 @@ const TS = (v) => {
 };
 const NUM = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
 
+// How long a counted click's id is remembered. A retry comes from the same queue entry,
+// which stays until the Worker answers, so this only has to outlast a long time offline.
+const CLICK_ID_DAYS = 90;
+
 export async function applyOps(db, ops) {
   let applied = 0, skipped = 0;
+  if (ops.some((o) => o?.type === "click" && o.op_id !== undefined)) {
+    const cutoff = new Date(Date.now() - CLICK_ID_DAYS * 864e5).toISOString();
+    await db.prepare("DELETE FROM click_ops WHERE seen_at < ?1").bind(cutoff).run();
+  }
   for (const op of ops) {
     // An op the rules refuse (bad shape, stale) is skipped. A database error is different:
     // it throws, the request fails, and the sender keeps its queue and tries again later.
@@ -85,11 +93,26 @@ async function applyOne(db, op) {
     }
     case "click": {
       if (!ID(op.id) || !TS(op.at)) return false;
-      const res = await db.prepare(
-        `UPDATE links SET click_count = click_count + 1,
-           last_clicked_at = CASE WHEN last_clicked_at IS NULL OR last_clicked_at < ?2 THEN ?2 ELSE last_clicked_at END
-         WHERE id = ?1`
-      ).bind(op.id, op.at).run();
+      // An older extension sends clicks with no op_id: count them as before.
+      if (op.op_id === undefined) {
+        const res = await db.prepare(
+          `UPDATE links SET click_count = click_count + 1,
+             last_clicked_at = CASE WHEN last_clicked_at IS NULL OR last_clicked_at < ?2 THEN ?2 ELSE last_clicked_at END
+           WHERE id = ?1`
+        ).bind(op.id, op.at).run();
+        return res.meta.changes > 0;
+      }
+      if (!ID(op.op_id)) return false;
+      // The extension resends a batch whose answer was lost, so a click can arrive twice.
+      // Count it only if its op_id is new, and remember the op_id in the same transaction.
+      const [res] = await db.batch([
+        db.prepare(
+          `UPDATE links SET click_count = click_count + 1,
+             last_clicked_at = CASE WHEN last_clicked_at IS NULL OR last_clicked_at < ?2 THEN ?2 ELSE last_clicked_at END
+           WHERE id = ?1 AND NOT EXISTS (SELECT 1 FROM click_ops WHERE op_id = ?3)`
+        ).bind(op.id, op.at, op.op_id),
+        db.prepare("INSERT OR IGNORE INTO click_ops (op_id, seen_at) VALUES (?1, ?2)").bind(op.op_id, new Date().toISOString()),
+      ]);
       return res.meta.changes > 0;
     }
     default:

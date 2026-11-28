@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 import { beforeEach, describe, it, expect, vi } from "vitest";
 import { applyOpLocal, enqueue, flush, pull } from "../lib/sync.js";
 import { getQueue, getState, setConfig, setQueue, setState } from "../lib/store.js";
@@ -218,6 +218,33 @@ describe("flush sends small batches and never drops what wasn't stored", () => {
     globalThis.fetch = vi.fn(async () => (++calls === 2 ? { ok: false, status: 500 } : { ok: true, json: async () => ({}) }));
     await expect(flush()).rejects.toThrow("HTTP 500");
     expect(await getQueue()).toHaveLength(25);
+  });
+});
+
+describe("clicks carry an id so a retried batch is never counted twice", () => {
+  it("sends each click with op_id, and a retry after a lost answer resends the same op_id", async () => {
+    await setConfig({ apiUrl: "https://x", token: "t" });
+    await setQueue([
+      { type: "click", id: "l1", at: T1, _seq: "s1" },
+      { type: "click", id: "l1", at: T1, _seq: "s2" },
+      { type: "upsert_collection", row: col("c1"), _seq: "s3" },
+    ]);
+    const bodies = [];
+    let calls = 0;
+    // First send: the Worker stores it but the answer never arrives. Second send: ok.
+    globalThis.fetch = vi.fn(async (_url, opts) => {
+      bodies.push(JSON.parse(opts.body).ops);
+      if (++calls === 1) throw new Error("network dropped");
+      return { ok: true, json: async () => ({}) };
+    });
+    await expect(flush()).rejects.toThrow("network dropped");
+    await flush();
+    const clickIds = (ops) => ops.filter((o) => o.type === "click").map((o) => o.op_id);
+    expect(clickIds(bodies[0])).toEqual(["s1", "s2"]);
+    expect(clickIds(bodies[1])).toEqual(clickIds(bodies[0]));
+    expect(bodies[0].find((o) => o.type === "upsert_collection").op_id).toBeUndefined();
+    expect(bodies[0].some((o) => "_seq" in o)).toBe(false);
+    expect(await getQueue()).toHaveLength(0);
   });
 });
 

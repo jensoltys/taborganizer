@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 const get = (key, fallback) =>
   chrome.storage.local.get(key).then((o) => o[key] ?? fallback);
 const set = (key, value) => chrome.storage.local.set({ [key]: value });

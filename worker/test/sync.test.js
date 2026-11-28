@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (C) 2026 the Tab Organizer authors. See LICENSE.
+// Copyright (C) 2026 Jen Soltys. See LICENSE.
 import { describe, it, expect, beforeEach } from "vitest";
 import { env } from "cloudflare:test";
 import { getState, applyOps } from "../src/sync.js";
@@ -10,7 +10,7 @@ const col = (o = {}) => ({ id: "c1", name: "Blogs", sort_order: 1, archived: 0, 
 const link = (o = {}) => ({ id: "l1", collection_id: "c1", url: "https://a.com", title: "A", sort_order: 1, starred: 0, created_at: T1, updated_at: T1, ...o });
 
 beforeEach(async () => {
-  await env.DB.exec("DELETE FROM links; DELETE FROM collections;");
+  await env.DB.exec("DELETE FROM links; DELETE FROM collections; DELETE FROM click_ops;");
 });
 
 describe("applyOps", () => {
@@ -35,6 +35,24 @@ describe("applyOps", () => {
     const { links } = await getState(env.DB);
     expect(links[0].click_count).toBe(2);
     expect(links[0].last_clicked_at).toBe(T2);
+  });
+
+  it("a click resent with the same op_id counts once (batch stored, answer lost, batch retried)", async () => {
+    await applyOps(env.DB, [{ type: "upsert_collection", row: col() }, { type: "upsert_link", row: link() }]);
+    const batch = [{ type: "click", id: "l1", at: T1, op_id: "k1" }];
+    expect(await applyOps(env.DB, batch)).toEqual({ applied: 1, skipped: 0 });
+    expect(await applyOps(env.DB, batch)).toEqual({ applied: 0, skipped: 1 });
+    await applyOps(env.DB, [{ type: "click", id: "l1", at: T2, op_id: "k2" }]);
+    await applyOps(env.DB, [{ type: "click", id: "l1", at: T2 }]); // an older extension sends no op_id: still counts
+    const { links } = await getState(env.DB);
+    expect(links[0].click_count).toBe(3);
+    expect(links[0].last_clicked_at).toBe(T2);
+  });
+
+  it("refuses a click whose op_id isn't a short string", async () => {
+    await applyOps(env.DB, [{ type: "upsert_collection", row: col() }, { type: "upsert_link", row: link() }]);
+    const r = await applyOps(env.DB, [{ type: "click", id: "l1", at: T1, op_id: 7 }, { type: "click", id: "l1", at: T1, op_id: "x".repeat(65) }]);
+    expect(r).toEqual({ applied: 0, skipped: 2 });
   });
 
   it("upsert_link cannot clobber click data", async () => {
