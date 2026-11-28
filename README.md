@@ -157,9 +157,7 @@ That runs the Worker tests, the extension tests and `scripts/test-security.mjs`,
 
 ## Made by
 
-**Jen Soltys**, an Amazon Influencer creator. I build small apps that fix everyday annoyances at **[Jen Built It](https://jenbuiltit.com)** and write about building with AI at **[jen8n.com](https://jen8n.com)**.
-
-If Tab Organizer helps you, a ⭐ on this repo helps other people find it.
+**Jen Soltys**. I build small apps that fix everyday annoyances at **[Jen Built It](https://jenbuiltit.com)** and write about building with AI at **[jen8n.com](https://jen8n.com)**.
 
 ## Contributing
 
